@@ -38,7 +38,7 @@ CX          = g++
 CCFLAGS     = -O2 -O3 -DLINUX -D_GNU_SOURCE -Wall -c $(INCLUDES) $(FORMAT) -fPIC -g
 CXFLAGS     = -O2 -O3 -DLINUX -D_GNU_SOURCE -Wall -c $(INCLUDES) $(FORMAT) -fPIC -g
 FORMAT     = -m32
-INCLUDES    += -I$(DIR_DXL)/include/dynamixel_sdk
+INCLUDES    += -I$(DIR_DXL)/include
 
 #---------------------------------------------------------------------
 # Required external libraries
@@ -48,15 +48,15 @@ LIBRARIES  += -lrt
 #---------------------------------------------------------------------
 # SDK Files
 #---------------------------------------------------------------------
-SOURCES  = src/dynamixel_sdk/group_bulk_read.c \
-           src/dynamixel_sdk/group_bulk_write.c \
-           src/dynamixel_sdk/group_sync_read.c \
-           src/dynamixel_sdk/group_sync_write.c \
-           src/dynamixel_sdk/packet_handler.c \
-           src/dynamixel_sdk/port_handler.c \
-           src/dynamixel_sdk/protocol1_packet_handler.c \
-           src/dynamixel_sdk/protocol2_packet_handler.c \
-           src/dynamixel_sdk/port_handler_linux.c \
+SOURCES  = src/group_bulk_read.c \
+           src/group_bulk_write.c \
+           src/group_sync_read.c \
+           src/group_sync_write.c \
+           src/packet_handler.c \
+           src/port_handler.c \
+           src/protocol1_packet_handler.c \
+           src/protocol2_packet_handler.c \
+           src/port_handler_linux.c \
 
 
 OBJECTS=$(addsuffix .o,$(addprefix $(DIR_OBJS)/,$(basename $(notdir $(SOURCES)))))
@@ -83,8 +83,8 @@ install: $(TARGET)
 	-$(SYMLINK) "$(INSTALL_ROOT)/lib/$(TARGET)" "$(INSTALL_ROOT)/lib/$(TARGET3)"
 
     # copy the headers into the include directory
-	@$(CHK_DIR_EXISTS) $(INSTALL_ROOT)/include/dynamixel_sdk || $(MKDIR) $(INSTALL_ROOT)/include/dynamixel_sdk
-	$(CP_ALL) $(DIR_DXL)/include/dynamixel_sdk/* $(INSTALL_ROOT)/include/dynamixel_sdk/
+	@$(CHK_DIR_EXISTS) $(INSTALL_ROOT)/include || $(MKDIR) $(INSTALL_ROOT)/include
+	$(CP_ALL) $(DIR_DXL)/include/* $(INSTALL_ROOT)/include
 
 	$(LD_CONFIG)
 
@@ -94,8 +94,8 @@ uninstall:
 	$(RM) $(INSTALL_ROOT)/lib/$(TARGET2)
 	$(RM) $(INSTALL_ROOT)/lib/$(TARGET3)
 
-	$(RM) $(INSTALL_ROOT)/include/dynamixel_sdk/dynamixel_sdk.h
-	$(RM_ALL) $(INSTALL_ROOT)/include/dynamixel_sdk/*
+	$(RM) $(INSTALL_ROOT)/include/dynamixel_sdk.h
+	$(RM_ALL) $(INSTALL_ROOT)/include/*
 
 reinstall: uninstall install
 
@@ -104,16 +104,16 @@ reinstall: uninstall install
 # Make rules for all .c and .cpp files in each directory
 #---------------------------------------------------------------------
 
-$(DIR_OBJS)/%.o: $(DIR_DXL)/src/dynamixel_sdk/%.c
+$(DIR_OBJS)/%.o: $(DIR_DXL)/src/%.c
 	$(CC) $(CCFLAGS) -c $? -o $@
 
-$(DIR_OBJS)/%.o: $(DIR_DXL)/src/dynamixel_sdk/%.cpp
+$(DIR_OBJS)/%.o: $(DIR_DXL)/src/%.cpp
 	$(CX) $(CXFLAGS) -c $? -o $@
 
-$(DIR_OBJS)/%.o: $(DIR_DXL)/src/dynamixel_sdk/%.c
+$(DIR_OBJS)/%.o: $(DIR_DXL)/src/%.c
 	$(CC) $(CCFLAGS) -c $? -o $@
 
-$(DIR_OBJS)/%.o: $(DIR_DXL)/src/dynamixel_sdk/%.cpp
+$(DIR_OBJS)/%.o: $(DIR_DXL)/src/%.cpp
 	$(CX) $(CXFLAGS) -c $? -o $@
 
 #---------------------------------------------------------------------
